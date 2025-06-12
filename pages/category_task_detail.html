@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>تفاصيل المهام - Islamic Habits Tracker</title>
+    <link rel="stylesheet" href="../css/main.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet" />
+    <style>
+        .arabic-font { font-family: 'Amiri', serif; }
+        .gradient-bg { background: linear-gradient(135deg, #4A7C59 0%, #2D5A4F 100%); }
+        .task-item { transition: all 0.3s ease; }
+        .task-item:hover { transform: translateY(-2px); }
+        .task-complete { 
+            background: linear-gradient(90deg, #10B981, #059669);
+            color: white;
+            transform: scale(1.02);
+        }
+        .task-pending {
+            background: white;
+            border: 2px solid #E5E7EB;
+        }
+        .progress-animation { animation: progressFill 1s ease-out; }
+        @keyframes progressFill {
+            from { width: 0%; }
+            to { width: var(--progress-width); }
+        }
+        .bounce-in { animation: bounceIn 0.5s ease-out; }
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .slide-in { animation: slideIn 0.4s ease-out; }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .islamic-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M30 30c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20zm0 0c0 11.046 8.954 20 20 20s20-8.954 20-20-8.954-20-20-20-20 8.954-20 20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        .category-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .notes-section {
+            background: linear-gradient(135deg, #F8FFFE 0%, #F0F9F7 100%);
+            border: 1px solid #D1F2ED;
+        }
+        .action-buttons {
+            position: sticky;
+            bottom: 0;
+            background: white;
+            border-top: 1px solid #E5E7EB;
+            padding: 16px;
+            margin: -16px;
+        }
+        @media (min-width: 768px) {
+            .desktop-sidebar {
+                position: fixed;
+                right: 0;
+                top: 0;
+                width: 400px;
+                height: 100vh;
+                background: white;
+                box-shadow: -4px 0 8px rgba(0, 0, 0, 0.1);
+                z-index: 50;
+            }
+        }
+    </style>
+<script type="module" src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fislamicha1172back.builtwithrocket.new&_v=0.1.2"></script>
+</head>
+<body class="bg-background min-h-screen">
+    <!-- Mobile Header -->
+    <header class="gradient-bg islamic-pattern text-white p-4 shadow-custom-md md:hidden">
+        <div class="flex items-center gap-3">
+            <button id="backBtn" class="p-2 hover:bg-white/10 rounded-lg transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+            </button>
+            <div class="category-icon" id="categoryIcon">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-xl font-bold arabic-font" id="categoryTitle">الصلاة</h1>
+                <p class="text-sm opacity-90" id="categorySubtitle">Prayer Tasks</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Desktop/Tablet Layout -->
+    <div class="hidden md:block">
+        <div class="max-w-6xl mx-auto p-4">
+            <div class="flex gap-6">
+                <!-- Main Dashboard Area (Left) -->
+                <div class="flex-1">
+                    <div class="card p-6">
+                        <div class="flex items-center gap-3 mb-6">
+                            <button id="backBtnDesktop" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                                <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                                </svg>
+                            </button>
+                            <h2 class="text-2xl font-bold arabic-font">العودة إلى لوحة التحكم</h2>
+                        </div>
+                        <p class="text-text-secondary arabic-font">اختر فئة أخرى أو عد إلى اللوحة الرئيسية لمتابعة تتبع عاداتك الإسلامية اليومية.</p>
+                        
+                        <!-- Quick Stats -->
+                        <div class="grid grid-cols-3 gap-4 mt-6">
+                            <div class="text-center p-4 bg-primary-50 rounded-lg">
+                                <p class="text-2xl font-bold text-primary" id="totalPointsDesktop">38</p>
+                                <p class="text-sm text-text-secondary arabic-font">إجمالي النقاط</p>
+                            </div>
+                            <div class="text-center p-4 bg-secondary-50 rounded-lg">
+                                <p class="text-2xl font-bold text-secondary" id="completedTasksDesktop">3</p>
+                                <p class="text-sm text-text-secondary arabic-font">المهام المكتملة</p>
+                            </div>
+                            <div class="text-center p-4 bg-accent-50 rounded-lg">
+                                <p class="text-2xl font-bold text-accent" id="progressDesktop">19.8%</p>
+                                <p class="text-sm text-text-secondary arabic-font">التقدم اليومي</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category Detail Sidebar (Right) -->
+                <div class="w-96 slide-in">
+                    <div class="card p-6 h-full">
+                        <div class="category-detail-content">
+                            <!-- Category Header -->
+                            <div class="flex items-center gap-3 mb-6">
+                                <div class="category-icon bg-primary-100" id="categoryIconDesktop">
+                                    <svg class="w-6 h-6 text-primary" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6l5.25 3.15-.75 1.23L11 13V7z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold arabic-font" id="categoryTitleDesktop">الصلاة</h3>
+                                    <p class="text-sm text-text-secondary" id="categorySubtitleDesktop">Prayer Tasks</p>
+                                </div>
+                            </div>
+
+                            <!-- Progress Indicator -->
+                            <div class="mb-6">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-sm font-medium arabic-font">التقدم</span>
+                                    <span class="text-sm text-text-secondary" id="progressText">1 من 5 مكتمل</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill progress-animation" id="categoryProgressBar" style="--progress-width: 20%; width: 20%;"></div>
+                                </div>
+                            </div>
+
+                            <!-- Task List -->
+                            <div class="space-y-3 mb-6" id="taskList">
+                                <!-- Tasks will be populated by JavaScript -->
+                            </div>
+
+                            <!-- Notes Section -->
+                            <div class="notes-section p-4 rounded-lg mb-6">
+                                <h4 class="font-semibold arabic-font mb-2">ملاحظات شخصية</h4>
+                                <textarea id="categoryNotes" placeholder="اكتب ملاحظاتك وتأملاتك هنا..." class="w-full h-20 p-2 border border-border rounded-lg resize-none focus:ring-2 focus:ring-primary focus:border-transparent arabic-font"></textarea>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="action-buttons space-y-3">
+                                <button id="markAllCompleteBtn" class="w-full btn btn-primary arabic-font">
+                                    تحديد الكل كمكتمل
+                                </button>
+                                <button id="resetCategoryBtn" class="w-full btn bg-gray-100 text-gray-700 hover:bg-gray-200 arabic-font">
+                                    إعادة تعيين الفئة
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Content -->
+    <main class="md:hidden p-4 pb-20">
+        <!-- Progress Indicator -->
+        <div class="card p-4 mb-6">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-sm font-medium arabic-font">التقدم</span>
+                <span class="text-sm text-text-secondary" id="progressTextMobile">1 من 5 مكتمل</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill progress-animation" id="categoryProgressBarMobile" style="--progress-width: 20%; width: 20%;"></div>
+            </div>
+        </div>
+
+        <!-- Task List -->
+        <div class="space-y-4 mb-6" id="taskListMobile">
+            <!-- Tasks will be populated by JavaScript -->
+        </div>
+
+        <!-- Notes Section -->
+        <div class="card p-4 mb-6">
+            <div class="notes-section p-4 rounded-lg">
+                <h4 class="font-semibold arabic-font mb-2">ملاحظات شخصية</h4>
+                <textarea id="categoryNotesMobile" placeholder="اكتب ملاحظاتك وتأملاتك هنا..." class="w-full h-20 p-2 border border-border rounded-lg resize-none focus:ring-2 focus:ring-primary focus:border-transparent arabic-font"></textarea>
+            </div>
+        </div>
+    </main>
+
+    <!-- Mobile Action Buttons -->
+    <div class="md:hidden fixed bottom-0 left-0 right-0 action-buttons bg-white border-t border-border p-4 space-y-3">
+        <button id="markAllCompleteBtnMobile" class="w-full btn btn-primary arabic-font">
+            تحديد الكل كمكتمل
+        </button>
+        <button id="resetCategoryBtnMobile" class="w-full btn bg-gray-100 text-gray-700 hover:bg-gray-200 arabic-font">
+            إعادة تعيين الفئة
+        </button>
+    </div>
+
+    <script>
+        // Category data structure
+        const categoryData = {
+            prayer: {
+                title: 'الصلاة',
+                subtitle: 'Prayer Tasks',
+                icon: `<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6l5.25 3.15-.75 1.23L11 13V7z"/>`,
+                color: 'primary',
+                tasks: [
+                    { id: 'fajr', arabic: 'صلاة الفجر', english: 'Fajr Prayer', points: 10 },
+                    { id: 'dhuhr', arabic: 'صلاة الظهر', english: 'Dhuhr Prayer', points: 10 },
+                    { id: 'asr', arabic: 'صلاة العصر', english: 'Asr Prayer', points: 10 },
+                    { id: 'maghrib', arabic: 'صلاة المغرب', english: 'Maghrib Prayer', points: 10 },
+                    { id: 'isha', arabic: 'صلاة العشاء', english: 'Isha Prayer', points: 10 }
+                ]
+            },
+            dhikr: {
+                title: 'الذكر',
+                subtitle: 'Remembrance Tasks',
+                icon: `<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>`,
+                color: 'secondary',
+                tasks: [
+                    { id: 'morning-adhkar', arabic: 'أذكار الصباح', english: 'Morning Remembrance', points: 15 },
+                    { id: 'evening-adhkar', arabic: 'أذكار المساء', english: 'Evening Remembrance', points: 15 },
+                    { id: 'istighfar', arabic: 'الاستغفار (100 مرة)', english: 'Istighfar (100 times)', points: 5 },
+                    { id: 'tasbih', arabic: 'التسبيح', english: 'Tasbih', points: 8 },
+                    { id: 'tahmid', arabic: 'التحميد', english: 'Tahmid', points: 8 },
+                    { id: 'takbir', arabic: 'التكبير', english: 'Takbir', points: 8 },
+                    { id: 'salawat', arabic: 'الصلاة على النبي', english: 'Salawat on Prophet', points: 10 }
+                ]
+            },
+            quran: {
+                title: 'القرآن',
+                subtitle: 'Quran Tasks',
+                icon: `<path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/>`,
+                color: 'accent',
+                tasks: [
+                    { id: 'quran-reading', arabic: 'قراءة صفحة من القرآن', english: 'Read one page of Quran', points: 20 },
+                    { id: 'quran-memorization', arabic: 'حفظ آيات جديدة', english: 'Memorize new verses', points: 25 },
+                    { id: 'quran-reflection', arabic: 'تدبر وتأمل', english: 'Reflection and contemplation', points: 15 }
+                ]
+            },
+            charity: {
+                title: 'الصدقة',
+                subtitle: 'Charity Tasks',
+                icon: `<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>`,
+                color: 'success',
+                tasks: [
+                    { id: 'daily-charity', arabic: 'صدقة يومية', english: 'Daily charity', points: 30 }
+                ]
+            }
+        };
+
+        // App state
+        let currentCategory = 'prayer';
+        let habitsData = {
+            points: 38,
+            totalPoints: 192,
+            completedTasks: 3,
+            totalTasks: 18,
+            tasks: {
+                fajr: true,
+                dhuhr: false,
+                asr: false,
+                maghrib: false,
+                isha: false,
+                'morning-adhkar': false,
+                'evening-adhkar': false,
+                'istighfar': false,
+                'tasbih': false,
+                'tahmid': false,
+                'takbir': false,
+                'salawat': false,
+                'quran-reading': false,
+                'quran-memorization': false,
+                'quran-reflection': false,
+                'daily-charity': true
+            },
+            notes: {
+                prayer: '',
+                dhikr: '',
+                quran: '',
+                charity: ''
+            }
+        };
+
+        // Initialize app
+        function initializeApp() {
+            // Get category from URL parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const categoryParam = urlParams.get('category');
+            if (categoryParam && categoryData[categoryParam]) {
+                currentCategory = categoryParam;
+            }
+
+            // Load saved data
+            loadData();
+            
+            // Setup UI
+            setupCategory();
+            setupEventListeners();
+            updateUI();
+        }
+
+        // Load data from localStorage
+        function loadData() {
+            const saved = localStorage.getItem('islamicHabitsData');
+            if (saved) {
+                habitsData = { ...habitsData, ...JSON.parse(saved) };
+            }
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('islamicHabitsData', JSON.stringify(habitsData));
+        }
+
+        // Setup category display
+        function setupCategory() {
+            const category = categoryData[currentCategory];
+            
+            // Update titles and icons
+            document.getElementById('categoryTitle').textContent = category.title;
+            document.getElementById('categorySubtitle').textContent = category.subtitle;
+            document.getElementById('categoryTitleDesktop').textContent = category.title;
+            document.getElementById('categorySubtitleDesktop').textContent = category.subtitle;
+
+            // Update icons
+            const iconElements = [
+                document.getElementById('categoryIcon'),
+                document.getElementById('categoryIconDesktop')
+            ];
+            
+            iconElements.forEach(iconEl => {
+                if (iconEl) {
+                    iconEl.innerHTML = `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">${category.icon}</svg>`;
+                    iconEl.className = `category-icon bg-${category.color}-100`;
+                    iconEl.querySelector('svg').className = `w-6 h-6 text-${category.color}`;
+                }
+            });
+
+            // Generate task lists
+            generateTaskList('taskList', false);
+            generateTaskList('taskListMobile', true);
+
+            // Load notes
+            const notesElements = [
+                document.getElementById('categoryNotes'),
+                document.getElementById('categoryNotesMobile')
+            ];
+            notesElements.forEach(el => {
+                if (el) {
+                    el.value = habitsData.notes[currentCategory] || '';
+                }
+            });
+        }
+
+        // Generate task list
+        function generateTaskList(containerId, isMobile) {
+            const container = document.getElementById(containerId);
+            const category = categoryData[currentCategory];
+            
+            container.innerHTML = category.tasks.map(task => {
+                const isCompleted = habitsData.tasks[task.id] || false;
+                const taskClass = isCompleted ? 'task-complete' : 'task-pending';
+                const checkboxClass = `w-5 h-5 text-${category.color} rounded focus:ring-${category.color}`;
+                
+                return `
+                    <div class="task-item ${taskClass} p-4 rounded-lg shadow-custom-sm" data-task-id="${task.id}">
+                        <div class="flex items-center gap-3">
+                            <input 
+                                type="checkbox" 
+                                id="${task.id}_${isMobile ? 'mobile' : 'desktop'}" 
+                                class="${checkboxClass}" 
+                                data-points="${task.points}"
+                                ${isCompleted ? 'checked' : ''}
+                            >
+                            <div class="flex-1">
+                                <label for="${task.id}_${isMobile ? 'mobile' : 'desktop'}" class="block font-semibold arabic-font cursor-pointer">
+                                    ${task.arabic}
+                                </label>
+                                <p class="text-sm text-text-secondary">${task.english}</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-lg font-bold text-accent">+${task.points}</span>
+                                <p class="text-xs text-text-secondary">نقاط</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Add event listeners to checkboxes
+            container.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', handleTaskChange);
+            });
+        }
+
+        // Handle task completion
+        function handleTaskChange(event) {
+            const taskId = event.target.id.split('_')[0];
+            const isChecked = event.target.checked;
+            const points = parseInt(event.target.dataset.points);
+
+            // Update task status
+            habitsData.tasks[taskId] = isChecked;
+
+            // Update points and task count
+            if (isChecked) {
+                habitsData.points += points;
+                habitsData.completedTasks++;
+                // Add bounce animation
+                event.target.closest('.task-item').classList.add('bounce-in');
+                setTimeout(() => {
+                    event.target.closest('.task-item').classList.remove('bounce-in');
+                }, 500);
+            } else {
+                habitsData.points -= points;
+                habitsData.completedTasks--;
+            }
+
+            // Update UI and save data
+            updateUI();
+            saveData();
+
+            // Sync checkboxes across mobile and desktop
+            syncCheckboxes(taskId, isChecked);
+        }
+
+        // Sync checkboxes between mobile and desktop
+        function syncCheckboxes(taskId, isChecked) {
+            const checkboxes = document.querySelectorAll(`input[id^="${taskId}_"]`);
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = isChecked;
+                const taskItem = checkbox.closest('.task-item');
+                if (isChecked) {
+                    taskItem.classList.remove('task-pending');
+                    taskItem.classList.add('task-complete');
+                } else {
+                    taskItem.classList.remove('task-complete');
+                    taskItem.classList.add('task-pending');
+                }
+            });
+        }
+
+        // Update UI elements
+        function updateUI() {
+            const category = categoryData[currentCategory];
+            const completedCount = category.tasks.filter(task => habitsData.tasks[task.id]).length;
+            const totalCount = category.tasks.length;
+            const percentage = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
+
+            // Update progress text
+            const progressTexts = [
+                document.getElementById('progressText'),
+                document.getElementById('progressTextMobile')
+            ];
+            progressTexts.forEach(el => {
+                if (el) {
+                    el.textContent = `${completedCount} من ${totalCount} مكتمل`;
+                }
+            });
+
+            // Update progress bars
+            const progressBars = [
+                document.getElementById('categoryProgressBar'),
+                document.getElementById('categoryProgressBarMobile')
+            ];
+            progressBars.forEach(bar => {
+                if (bar) {
+                    bar.style.setProperty('--progress-width', percentage + '%');
+                    bar.style.width = percentage + '%';
+                }
+            });
+
+            // Update desktop stats
+            const totalPointsEl = document.getElementById('totalPointsDesktop');
+            const completedTasksEl = document.getElementById('completedTasksDesktop');
+            const progressEl = document.getElementById('progressDesktop');
+            
+            if (totalPointsEl) totalPointsEl.textContent = habitsData.points;
+            if (completedTasksEl) completedTasksEl.textContent = habitsData.completedTasks;
+            if (progressEl) {
+                const overallProgress = ((habitsData.completedTasks / habitsData.totalTasks) * 100).toFixed(1);
+                progressEl.textContent = overallProgress + '%';
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Back buttons
+            const backButtons = [
+                document.getElementById('backBtn'),
+                document.getElementById('backBtnDesktop')
+            ];
+            backButtons.forEach(btn => {
+                if (btn) {
+                    btn.addEventListener('click', () => {
+                        window.location.href = 'daily_habits_dashboard.html';
+                    });
+                }
+            });
+
+            // Mark all complete buttons
+            const markAllButtons = [
+                document.getElementById('markAllCompleteBtn'),
+                document.getElementById('markAllCompleteBtnMobile')
+            ];
+            markAllButtons.forEach(btn => {
+                if (btn) {
+                    btn.addEventListener('click', markAllComplete);
+                }
+            });
+
+            // Reset category buttons
+            const resetButtons = [
+                document.getElementById('resetCategoryBtn'),
+                document.getElementById('resetCategoryBtnMobile')
+            ];
+            resetButtons.forEach(btn => {
+                if (btn) {
+                    btn.addEventListener('click', resetCategory);
+                }
+            });
+
+            // Notes textarea
+            const notesElements = [
+                document.getElementById('categoryNotes'),
+                document.getElementById('categoryNotesMobile')
+            ];
+            notesElements.forEach(el => {
+                if (el) {
+                    el.addEventListener('input', (e) => {
+                        habitsData.notes[currentCategory] = e.target.value;
+                        saveData();
+                        // Sync notes between mobile and desktop
+                        notesElements.forEach(otherEl => {
+                            if (otherEl !== e.target) {
+                                otherEl.value = e.target.value;
+                            }
+                        });
+                    });
+                }
+            });
+        }
+
+        // Mark all tasks complete
+        function markAllComplete() {
+            const category = categoryData[currentCategory];
+            let pointsAdded = 0;
+            let tasksAdded = 0;
+
+            category.tasks.forEach(task => {
+                if (!habitsData.tasks[task.id]) {
+                    habitsData.tasks[task.id] = true;
+                    pointsAdded += task.points;
+                    tasksAdded++;
+                }
+            });
+
+            habitsData.points += pointsAdded;
+            habitsData.completedTasks += tasksAdded;
+
+            // Update UI
+            setupCategory();
+            updateUI();
+            saveData();
+        }
+
+        // Reset category
+        function resetCategory() {
+            if (confirm('هل أنت متأكد من إعادة تعيين جميع مهام هذه الفئة؟')) {
+                const category = categoryData[currentCategory];
+                let pointsRemoved = 0;
+                let tasksRemoved = 0;
+
+                category.tasks.forEach(task => {
+                    if (habitsData.tasks[task.id]) {
+                        habitsData.tasks[task.id] = false;
+                        pointsRemoved += task.points;
+                        tasksRemoved++;
+                    }
+                });
+
+                habitsData.points -= pointsRemoved;
+                habitsData.completedTasks -= tasksRemoved;
+                habitsData.notes[currentCategory] = '';
+
+                // Update UI
+                setupCategory();
+                updateUI();
+                saveData();
+            }
+        }
+
+        // Initialize app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initializeApp);
+    </script>
+<script id="dhws-dataInjector" src="../public/dhws-data-injector.js"></script>
+</body>
+</html>

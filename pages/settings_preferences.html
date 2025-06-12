@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>الإعدادات والتفضيلات - Islamic Habits Tracker</title>
+    <link rel="stylesheet" href="../css/main.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet" />
+    <style>
+        .arabic-font { font-family: 'Amiri', serif; }
+        .gradient-bg { background: linear-gradient(135deg, #4A7C59 0%, #2D5A4F 100%); }
+        .accordion-item { transition: all 0.3s ease; }
+        .accordion-content { 
+            max-height: 0; 
+            overflow: hidden; 
+            transition: max-height 0.3s ease-out;
+        }
+        .accordion-content.expanded { 
+            max-height: 1000px; 
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #4A7C59;
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        .range-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        .range-slider:hover {
+            opacity: 1;
+        }
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #4A7C59;
+            cursor: pointer;
+        }
+        .range-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #4A7C59;
+            cursor: pointer;
+        }
+        .islamic-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M30 30c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20zm0 0c0 11.046 8.954 20 20 20s20-8.954 20-20-8.954-20-20-20-20 8.954-20 20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .confirmation-modal {
+            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.5);
+        }
+    </style>
+<script type="module" src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fislamicha1172back.builtwithrocket.new&_v=0.1.2"></script>
+</head>
+<body class="bg-background min-h-screen">
+    <!-- Header -->
+    <header class="gradient-bg islamic-pattern text-white p-4 shadow-custom-md">
+        <div class="flex items-center gap-4 max-w-6xl mx-auto">
+            <button onclick="window.location.href='daily_habits_dashboard.html'" class="p-2 hover:bg-white/10 rounded-lg transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+            </button>
+            <h1 class="text-xl font-bold arabic-font">الإعدادات والتفضيلات</h1>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto p-4 space-y-6">
+        <!-- Prayer Times Configuration -->
+        <section class="card accordion-item fade-in">
+            <div class="accordion-header p-6 cursor-pointer flex items-center justify-between" onclick="toggleAccordion('prayer-times')">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-primary" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6l5.25 3.15-.75 1.23L11 13V7z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold arabic-font">إعدادات أوقات الصلاة</h3>
+                        <p class="text-sm text-text-secondary">تخصيص حسابات أوقات الصلاة والتنبيهات</p>
+                    </div>
+                </div>
+                <svg class="w-5 h-5 text-text-secondary transition-transform duration-300" id="prayer-times-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </div>
+            <div class="accordion-content" id="prayer-times-content">
+                <div class="px-6 pb-6 space-y-6">
+                    <!-- Location Settings -->
+                    <div class="space-y-3">
+                        <label class="block text-sm font-medium arabic-font">الموقع الجغرافي</label>
+                        <div class="flex gap-3">
+                            <input type="text" id="location-input" placeholder="أدخل المدينة أو استخدم الموقع الحالي" class="flex-1 p-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent arabic-font" value="الرياض، السعودية" />
+                            <button class="btn btn-primary" onclick="getCurrentLocation()">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                </svg>
+                                الموقع الحالي
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Calculation Method -->
+                    <div class="space-y-3">
+                        <label class="block text-sm font-medium arabic-font">طريقة الحساب</label>
+                        <select class="w-full p-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent arabic-font">
+                            <option value="mwl">رابطة العالم الإسلامي</option>
+                            <option value="isna">الجمعية الإسلامية لأمريكا الشمالية</option>
+                            <option value="egypt">الهيئة المصرية العامة للمساحة</option>
+                            <option value="makkah">أم القرى - مكة المكرمة</option>
+                            <option value="karachi">جامعة العلوم الإسلامية - كراتشي</option>
+                        </select>
+                    </div>
+
+                    <!-- Prayer Notifications -->
+                    <div class="space-y-4">
+                        <h4 class="font-medium arabic-font">تنبيهات الصلاة</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="arabic-font">تنبيه قبل الأذان</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked />
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="arabic-font">وقت التنبيه (دقائق)</span>
+                                <div class="flex items-center gap-3">
+                                    <input type="range" min="5" max="30" value="15" class="range-slider" id="notification-time" />
+                                    <span class="text-sm font-medium w-8" id="notification-value">15</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Language Settings -->
+        <section class="card accordion-item fade-in">
+            <div class="accordion-header p-6 cursor-pointer flex items-center justify-between" onclick="toggleAccordion('language')">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-secondary-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-secondary" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold arabic-font">إعدادات اللغة</h3>
+                        <p class="text-sm text-text-secondary">تخصيص اللغة وحجم الخط</p>
+                    </div>
+                </div>
+                <svg class="w-5 h-5 text-text-secondary transition-transform duration-300" id="language-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </div>
+            <div class="accordion-content" id="language-content">
+                <div class="px-6 pb-6 space-y-6">
+                    <!-- Interface Language -->
+                    <div class="space-y-3">
+                        <label class="block text-sm font-medium arabic-font">لغة الواجهة</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button class="p-3 border-2 border-primary bg-primary-50 rounded-lg text-primary font-medium arabic-font">العربية</button>
+                            <button class="p-3 border border-border rounded-lg hover:bg-gray-50 transition-colors">English</button>
+                        </div>
+                    </div>
+
+                    <!-- Font Size -->
+                    <div class="space-y-3">
+                        <label class="block text-sm font-medium arabic-font">حجم الخط</label>
+                        <div class="flex items-center gap-4">
+                            <span class="text-sm arabic-font">صغير</span>
+                            <input type="range" min="12" max="20" value="16" class="range-slider flex-1" id="font-size" />
+                            <span class="text-sm arabic-font">كبير</span>
+                        </div>
+                        <div class="p-3 bg-primary-50 rounded-lg">
+                            <p class="arabic-font" id="font-preview" style="font-size: 16px;">نموذج للنص - بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</p>
+                        </div>
+                    </div>
+
+                    <!-- RTL Support -->
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <span class="font-medium arabic-font">دعم الكتابة من اليمين لليسار</span>
+                            <p class="text-sm text-text-secondary arabic-font">تفعيل التخطيط العربي الكامل</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked />
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Notification Preferences -->
+        <section class="card accordion-item fade-in">
+            <div class="accordion-header p-6 cursor-pointer flex items-center justify-between" onclick="toggleAccordion('notifications')">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-accent-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-accent" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold arabic-font">تفضيلات التنبيهات</h3>
+                        <p class="text-sm text-text-secondary">إدارة جميع أنواع التنبيهات</p>
+                    </div>
+                </div>
+                <svg class="w-5 h-5 text-text-secondary transition-transform duration-300" id="notifications-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </div>
+            <div class="accordion-content" id="notifications-content">
+                <div class="px-6 pb-6 space-y-6">
+                    <!-- Prayer Reminders -->
+                    <div class="space-y-4">
+                        <h4 class="font-medium arabic-font">تذكيرات الصلاة</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="arabic-font">تذكير الفجر</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked />
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="arabic-font">تذكير الظهر</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked />
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="arabic-font">تذكير العصر</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked />
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Daily Review -->
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="font-medium arabic-font">تذكير المراجعة اليومية</span>
+                                <p class="text-sm text-text-secondary arabic-font">تنبيه في نهاية اليوم لمراجعة الإنجازات</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked />
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm arabic-font">وقت التذكير:</span>
+                            <input type="time" value="21:00" class="p-2 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent" />
+                        </div>
+                    </div>
+
+                    <!-- Achievement Celebrations -->
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <span class="font-medium arabic-font">الاحتفال بالإنجازات</span>
+                            <p class="text-sm text-text-secondary arabic-font">إشعارات عند تحقيق الأهداف والمعالم</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked />
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Goal Customization -->
+        <section class="card accordion-item fade-in">
+            <div class="accordion-header p-6 cursor-pointer flex items-center justify-between" onclick="toggleAccordion('goals')">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-success/10 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-success" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold arabic-font">تخصيص الأهداف</h3>
+                        <p class="text-sm text-text-secondary">تحديد الأهداف الشخصية والأولويات</p>
+                    </div>
+                </div>
+                <svg class="w-5 h-5 text-text-secondary transition-transform duration-300" id="goals-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </div>
+            <div class="accordion-content" id="goals-content">
+                <div class="px-6 pb-6 space-y-6">
+                    <!-- Daily Point Target -->
+                    <div class="space-y-3">
+                        <label class="block text-sm font-medium arabic-font">الهدف اليومي للنقاط</label>
+                        <div class="flex items-center gap-4">
+                            <input type="range" min="50" max="300" value="192" class="range-slider flex-1" id="daily-points" />
+                            <div class="text-right">
+                                <span class="text-lg font-bold text-success" id="points-value">192</span>
+                                <span class="text-sm text-text-secondary arabic-font">نقطة</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Streak Objectives -->
+                    <div class="space-y-3">
+                        <label class="block text-sm font-medium arabic-font">هدف السلسلة المتتالية</label>
+                        <div class="grid grid-cols-3 gap-3">
+                            <button class="p-3 border border-border rounded-lg hover:bg-success/5 hover:border-success transition-colors text-center">
+                                <div class="text-lg font-bold">7</div>
+                                <div class="text-xs text-text-secondary arabic-font">أيام</div>
+                            </button>
+                            <button class="p-3 border-2 border-success bg-success/5 rounded-lg text-center">
+                                <div class="text-lg font-bold text-success">30</div>
+                                <div class="text-xs text-success arabic-font">أيام</div>
+                            </button>
+                            <button class="p-3 border border-border rounded-lg hover:bg-success/5 hover:border-success transition-colors text-center">
+                                <div class="text-lg font-bold">100</div>
+                                <div class="text-xs text-text-secondary arabic-font">أيام</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Category Priorities -->
+                    <div class="space-y-4">
+                        <h4 class="font-medium arabic-font">أولويات الفئات</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-3 bg-primary-50 rounded-lg">
+                                <span class="arabic-font">الصلاة</span>
+                                <span class="text-sm font-medium text-primary">أولوية عالية</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-secondary-50 rounded-lg">
+                                <span class="arabic-font">القرآن</span>
+                                <span class="text-sm font-medium text-secondary">أولوية عالية</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                <span class="arabic-font">الذكر</span>
+                                <span class="text-sm font-medium text-text-secondary">أولوية متوسطة</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Theme Settings -->
+        <section class="card accordion-item fade-in">
+            <div class="accordion-header p-6 cursor-pointer flex items-center justify-between" onclick="toggleAccordion('theme')">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-accent-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-accent" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold arabic-font">إعدادات المظهر</h3>
+                        <p class="text-sm text-text-secondary">تخصيص الألوان والأيقونات الإسلامية</p>
+                    </div>
+                </div>
+                <svg class="w-5 h-5 text-text-secondary transition-transform duration-300" id="theme-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </div>
+            <div class="accordion-content" id="theme-content">
+                <div class="px-6 pb-6 space-y-6">
+                    <!-- Color Scheme -->
+                    <div class="space-y-3">
+                        <label class="block text-sm font-medium arabic-font">نظام الألوان</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="p-4 border-2 border-primary bg-primary-50 rounded-lg cursor-pointer">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <div class="w-4 h-4 bg-primary rounded-full"></div>
+                                    <div class="w-4 h-4 bg-secondary rounded-full"></div>
+                                    <div class="w-4 h-4 bg-accent rounded-full"></div>
+                                </div>
+                                <span class="text-sm font-medium arabic-font">الأخضر الإسلامي</span>
+                            </div>
+                            <div class="p-4 border border-border rounded-lg cursor-pointer hover:bg-gray-50">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <div class="w-4 h-4 bg-blue-600 rounded-full"></div>
+                                    <div class="w-4 h-4 bg-blue-400 rounded-full"></div>
+                                    <div class="w-4 h-4 bg-purple-500 rounded-full"></div>
+                                </div>
+                                <span class="text-sm font-medium arabic-font">الأزرق الهادئ</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Islamic Patterns -->
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <span class="font-medium arabic-font">الزخارف الإسلامية</span>
+                            <p class="text-sm text-text-secondary arabic-font">إضافة أنماط هندسية إسلامية للخلفية</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked />
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <!-- Preview -->
+                    <div class="p-4 bg-gradient-to-r from-primary to-secondary rounded-lg islamic-pattern">
+                        <div class="bg-white/90 backdrop-blur-sm rounded-lg p-4">
+                            <h4 class="font-semibold arabic-font text-primary mb-2">معاينة المظهر</h4>
+                            <p class="text-sm text-text-secondary arabic-font">هذا مثال على كيفية ظهور التطبيق مع الإعدادات الحالية</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Data Management -->
+        <section class="card fade-in">
+            <div class="p-6">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 bg-warning/10 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-warning" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold arabic-font">إدارة البيانات</h3>
+                        <p class="text-sm text-text-secondary">نسخ احتياطي واستعادة وإعادة تعيين البيانات</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <button class="btn btn-secondary" onclick="exportData()">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        تصدير البيانات
+                    </button>
+                    <button class="btn btn-primary" onclick="createBackup()">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"/>
+                        </svg>
+                        نسخة احتياطية
+                    </button>
+                    <button class="btn bg-error text-white hover:bg-red-600" onclick="showResetConfirmation()">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        </svg>
+                        إعادة تعيين
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Reset Confirmation Modal -->
+    <div id="resetModal" class="fixed inset-0 confirmation-modal z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-custom-lg max-w-md w-full">
+            <div class="p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 bg-error/10 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold arabic-font">تأكيد إعادة التعيين</h3>
+                </div>
+                <p class="text-text-secondary arabic-font mb-6">هل أنت متأكد من رغبتك في إعادة تعيين جميع البيانات؟ هذا الإجراء لا يمكن التراجع عنه وسيتم حذف جميع التقدم والإعدادات.</p>
+                <div class="flex gap-3">
+                    <button class="btn bg-error text-white hover:bg-red-600 flex-1" onclick="confirmReset()">
+                        تأكيد الحذف
+                    </button>
+                    <button class="btn bg-gray-100 text-gray-700 hover:bg-gray-200 flex-1" onclick="hideResetConfirmation()">
+                        إلغاء
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Settings data
+        let settingsData = {
+            location: 'الرياض، السعودية',
+            calculationMethod: 'mwl',
+            notificationTime: 15,
+            language: 'ar',
+            fontSize: 16,
+            rtlSupport: true,
+            prayerNotifications: {
+                fajr: true,
+                dhuhr: true,
+                asr: true,
+                maghrib: true,
+                isha: true
+            },
+            dailyReview: true,
+            reviewTime: '21:00',
+            achievements: true,
+            dailyPointsTarget: 192,
+            streakGoal: 30,
+            islamicPatterns: true,
+            colorScheme: 'islamic-green'
+        };
+
+        // Load settings from localStorage
+        function loadSettings() {
+            const saved = localStorage.getItem('islamicHabitsSettings');
+            if (saved) {
+                settingsData = { ...settingsData, ...JSON.parse(saved) };
+            }
+            updateSettingsUI();
+        }
+
+        // Save settings to localStorage
+        function saveSettings() {
+            localStorage.setItem('islamicHabitsSettings', JSON.stringify(settingsData));
+        }
+
+        // Update settings UI
+        function updateSettingsUI() {
+            // Update notification time slider
+            const notificationSlider = document.getElementById('notification-time');
+            const notificationValue = document.getElementById('notification-value');
+            if (notificationSlider && notificationValue) {
+                notificationSlider.value = settingsData.notificationTime;
+                notificationValue.textContent = settingsData.notificationTime;
+            }
+
+            // Update font size
+            const fontSlider = document.getElementById('font-size');
+            const fontPreview = document.getElementById('font-preview');
+            if (fontSlider && fontPreview) {
+                fontSlider.value = settingsData.fontSize;
+                fontPreview.style.fontSize = settingsData.fontSize + 'px';
+            }
+
+            // Update daily points target
+            const pointsSlider = document.getElementById('daily-points');
+            const pointsValue = document.getElementById('points-value');
+            if (pointsSlider && pointsValue) {
+                pointsSlider.value = settingsData.dailyPointsTarget;
+                pointsValue.textContent = settingsData.dailyPointsTarget;
+            }
+        }
+
+        // Toggle accordion sections
+        function toggleAccordion(sectionId) {
+            const content = document.getElementById(sectionId + '-content');
+            const icon = document.getElementById(sectionId + '-icon');
+            
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                // Close all other accordions
+                document.querySelectorAll('.accordion-content').forEach(acc => {
+                    acc.classList.remove('expanded');
+                });
+                document.querySelectorAll('[id$="-icon"]').forEach(ic => {
+                    ic.style.transform = 'rotate(0deg)';
+                });
+                
+                // Open current accordion
+                content.classList.add('expanded');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        // Get current location
+        function getCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        // In a real app, you would reverse geocode these coordinates
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        document.getElementById('location-input').value = `${lat.toFixed(2)}, ${lng.toFixed(2)}`;
+                        settingsData.location = `${lat.toFixed(2)}, ${lng.toFixed(2)}`;
+                        saveSettings();
+                    },
+                    (error) => {
+                        alert('تعذر الحصول على الموقع الحالي');
+                    }
+                );
+            } else {
+                alert('المتصفح لا يدعم تحديد الموقع الجغرافي');
+            }
+        }
+
+        // Export data
+        function exportData() {
+            const habitsData = localStorage.getItem('islamicHabitsData') || '{}';
+            const settings = localStorage.getItem('islamicHabitsSettings') || '{}';
+            
+            const exportData = {
+                habits: JSON.parse(habitsData),
+                settings: JSON.parse(settings),
+                exportDate: new Date().toISOString()
+            };
+
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = `islamic-habits-backup-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+        }
+
+        // Create backup
+        function createBackup() {
+            exportData();
+            alert('تم إنشاء النسخة الاحتياطية بنجاح!');
+        }
+
+        // Show reset confirmation
+        function showResetConfirmation() {
+            document.getElementById('resetModal').classList.remove('hidden');
+        }
+
+        // Hide reset confirmation
+        function hideResetConfirmation() {
+            document.getElementById('resetModal').classList.add('hidden');
+        }
+
+        // Confirm reset
+        function confirmReset() {
+            localStorage.removeItem('islamicHabitsData');
+            localStorage.removeItem('islamicHabitsSettings');
+            hideResetConfirmation();
+            alert('تم إعادة تعيين جميع البيانات بنجاح!');
+            window.location.href = 'daily_habits_dashboard.html';
+        }
+
+        // Initialize settings page
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSettings();
+
+            // Add event listeners for sliders
+            const notificationSlider = document.getElementById('notification-time');
+            if (notificationSlider) {
+                notificationSlider.addEventListener('input', (e) => {
+                    document.getElementById('notification-value').textContent = e.target.value;
+                    settingsData.notificationTime = parseInt(e.target.value);
+                    saveSettings();
+                });
+            }
+
+            const fontSlider = document.getElementById('font-size');
+            if (fontSlider) {
+                fontSlider.addEventListener('input', (e) => {
+                    const fontSize = e.target.value + 'px';
+                    document.getElementById('font-preview').style.fontSize = fontSize;
+                    settingsData.fontSize = parseInt(e.target.value);
+                    saveSettings();
+                });
+            }
+
+            const pointsSlider = document.getElementById('daily-points');
+            if (pointsSlider) {
+                pointsSlider.addEventListener('input', (e) => {
+                    document.getElementById('points-value').textContent = e.target.value;
+                    settingsData.dailyPointsTarget = parseInt(e.target.value);
+                    saveSettings();
+                });
+            }
+
+            // Add event listeners for toggle switches
+            document.querySelectorAll('.toggle-switch input').forEach(toggle => {
+                toggle.addEventListener('change', (e) => {
+                    // Handle toggle changes based on context
+                    saveSettings();
+                });
+            });
+
+            // Close modal when clicking outside
+            document.getElementById('resetModal').addEventListener('click', (e) => {
+                if (e.target.id === 'resetModal') {
+                    hideResetConfirmation();
+                }
+            });
+        });
+    </script>
+<script id="dhws-dataInjector" src="../public/dhws-data-injector.js"></script>
+</body>
+</html>

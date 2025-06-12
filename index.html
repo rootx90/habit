@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Islamic Habit Tracker</title>
+    <link rel="stylesheet" href="css/main.css" />
+    <style>
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: var(--color-background);
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .loading-text {
+            color: var(--color-primary);
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            animation: fadeIn 1s ease-out;
+        }
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--color-primary-100);
+            border-top: 3px solid var(--color-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+<script type="module" src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fislamicha1172back.builtwithrocket.new&_v=0.1.2"></script>
+</head>
+<body>
+    <div class="loading-container">
+        <h1 class="loading-text">بسم الله الرحمن الرحيم</h1>
+        <div class="loading-spinner"></div>
+        <p style="color: var(--color-text-secondary); margin-top: 1rem; font-family: 'Inter', sans-serif;">
+            Loading your spiritual journey...
+        </p>
+    </div>
+
+    <script>
+        // Redirect to the main dashboard after a brief loading period
+        setTimeout(() => {
+            window.location.href = 'pages/daily_habits_dashboard.html';
+        }, 2000);
+    </script>
+<script id="dhws-dataInjector" src="/public/dhws-data-injector.js"></script>
+</body>
+</html>

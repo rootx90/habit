@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>لوحة العادات اليومية - Islamic Habits Tracker</title>
+    <link rel="stylesheet" href="../css/main.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet" />
+    <style>
+        .arabic-font { font-family: 'Amiri', serif; }
+        .gradient-bg { background: linear-gradient(135deg, #4A7C59 0%, #2D5A4F 100%); }
+        .task-item { transition: all 0.3s ease; }
+        .task-item:hover { transform: translateY(-2px); }
+        .progress-animation { animation: progressFill 1s ease-out; }
+        @keyframes progressFill {
+            from { width: 0%; }
+            to { width: var(--progress-width); }
+        }
+        .bounce-in { animation: bounceIn 0.5s ease-out; }
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .islamic-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M30 30c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20zm0 0c0 11.046 8.954 20 20 20s20-8.954 20-20-8.954-20-20-20-20 8.954-20 20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+    </style>
+<script type="module" src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fislamicha1172back.builtwithrocket.new&_v=0.1.2"></script>
+</head>
+<body class="bg-background min-h-screen">
+    <!-- Header -->
+    <header class="gradient-bg islamic-pattern text-white p-4 shadow-custom-md">
+        <div class="flex justify-between items-center max-w-6xl mx-auto">
+            <div class="flex items-center gap-3">
+                <button id="menuBtn" class="p-2 hover:bg-white/10 rounded-lg transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+                <h1 class="text-xl font-bold arabic-font">متتبع العادات الإسلامية</h1>
+            </div>
+            <div class="text-right arabic-font">
+                <p class="text-sm opacity-90">التاريخ</p>
+                <p class="font-semibold" id="arabicDate">الأحد ٢٥ جمادى الآخرة ١٤٤٦</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto p-4 space-y-6">
+        <!-- Metrics Section -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <!-- Points Counter -->
+            <div class="card p-6 text-center">
+                <div class="flex items-center justify-center gap-2 mb-2">
+                    <svg class="w-6 h-6 text-accent" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                    <h3 class="text-lg font-semibold arabic-font">النقاط</h3>
+                </div>
+                <p class="text-3xl font-bold text-accent" id="pointsCounter">38</p>
+                <p class="text-text-secondary">من 192</p>
+            </div>
+
+            <!-- Tasks Counter -->
+            <div class="card p-6 text-center">
+                <div class="flex items-center justify-center gap-2 mb-2">
+                    <svg class="w-6 h-6 text-secondary" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                    </svg>
+                    <h3 class="text-lg font-semibold arabic-font">المهام</h3>
+                </div>
+                <p class="text-3xl font-bold text-secondary" id="tasksCounter">3</p>
+                <p class="text-text-secondary">من 18</p>
+            </div>
+
+            <!-- Progress -->
+            <div class="card p-6 text-center">
+                <div class="flex items-center justify-center gap-2 mb-2">
+                    <svg class="w-6 h-6 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    <h3 class="text-lg font-semibold arabic-font">التقدم</h3>
+                </div>
+                <p class="text-3xl font-bold text-primary" id="progressPercentage">19.8%</p>
+                <div class="progress-bar mt-3">
+                    <div class="progress-fill progress-animation" id="progressBar" style="--progress-width: 19.8%; width: 19.8%;"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Category Cards -->
+        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Prayer Card -->
+            <div class="card p-6 hover:shadow-custom-lg transition-all duration-300">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-primary" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6l5.25 3.15-.75 1.23L11 13V7z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold arabic-font">الصلاة</h3>
+                        <p class="text-sm text-text-secondary">مكتمل 1/5</p>
+                    </div>
+                </div>
+                
+                <div class="space-y-3">
+                    <div class="task-item flex items-center gap-3 p-2 rounded-lg hover:bg-primary-50">
+                        <input type="checkbox" id="fajr" class="w-5 h-5 text-primary rounded focus:ring-primary" data-points="10" checked />
+                        <label for="fajr" class="flex-1 arabic-font cursor-pointer">صلاة الفجر</label>
+                        <span class="text-sm text-accent font-semibold">+10</span>
+                    </div>
+                    <div class="task-item flex items-center gap-3 p-2 rounded-lg hover:bg-primary-50">
+                        <input type="checkbox" id="dhuhr" class="w-5 h-5 text-primary rounded focus:ring-primary" data-points="10" />
+                        <label for="dhuhr" class="flex-1 arabic-font cursor-pointer">صلاة الظهر</label>
+                        <span class="text-sm text-accent font-semibold">+10</span>
+                    </div>
+                    <div class="task-item flex items-center gap-3 p-2 rounded-lg hover:bg-primary-50">
+                        <input type="checkbox" id="asr" class="w-5 h-5 text-primary rounded focus:ring-primary" data-points="10" />
+                        <label for="asr" class="flex-1 arabic-font cursor-pointer">صلاة العصر</label>
+                        <span class="text-sm text-accent font-semibold">+10</span>
+                    </div>
+                    <div class="task-item flex items-center gap-3 p-2 rounded-lg hover:bg-primary-50">
+                        <input type="checkbox" id="maghrib" class="w-5 h-5 text-primary rounded focus:ring-primary" data-points="10" />
+                        <label for="maghrib" class="flex-1 arabic-font cursor-pointer">صلاة المغرب</label>
+                        <span class="text-sm text-accent font-semibold">+10</span>
+                    </div>
+                    <div class="task-item flex items-center gap-3 p-2 rounded-lg hover:bg-primary-50">
+                        <input type="checkbox" id="isha" class="w-5 h-5 text-primary rounded focus:ring-primary" data-points="10" />
+                        <label for="isha" class="flex-1 arabic-font cursor-pointer">صلاة العشاء</label>
+                        <span class="text-sm text-accent font-semibold">+10</span>
+                    </div>
+                </div>
+                
+                <button class="w-full mt-4 text-primary hover:bg-primary-50 py-2 rounded-lg transition-colors" onclick="window.location.href='category_task_detail.html?category=prayer'">
+                    عرض التفاصيل
+                </button>
+            </div>
+
+            <!-- Remembrance Card -->
+            <div class="card p-6 hover:shadow-custom-lg transition-all duration-300">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 bg-secondary-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-secondary" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold arabic-font">الذكر</h3>
+                        <p class="text-sm text-text-secondary">مكتمل 0/7</p>
+                    </div>
+                </div>
+                
+                <div class="space-y-3">
+                    <div class="task-item flex items-center gap-3 p-2 rounded-lg hover:bg-secondary-50">
+                        <input type="checkbox" id="morning-adhkar" class="w-5 h-5 text-secondary rounded focus:ring-secondary" data-points="15" />
+                        <label for="morning-adhkar" class="flex-1 arabic-font cursor-pointer">أذكار الصباح</label>
+                        <span class="text-sm text-accent font-semibold">+15</span>
+                    </div>
+                    <div class="task-item flex items-center gap-3 p-2 rounded-lg hover:bg-secondary-50">
+                        <input type="checkbox" id="evening-adhkar" class="w-5 h-5 text-secondary rounded focus:ring-secondary" data-points="15" />
+                        <label for="evening-adhkar" class="flex-1 arabic-font cursor-pointer">أذكار المساء</label>
+                        <span class="text-sm text-accent font-semibold">+15</span>
+                    </div>
+                    <div class="task-item flex items-center gap-3 p-2 rounded-lg hover:bg-secondary-50">
+                        <input type="checkbox" id="istighfar" class="w-5 h-5 text-secondary rounded focus:ring-secondary" data-points="5" />
+                        <label for="istighfar" class="flex-1 arabic-font cursor-pointer">الاستغفار (100 مرة)</label>
+                        <span class="text-sm text-accent font-semibold">+5</span>
+                    </div>
+                </div>
+                
+                <button class="w-full mt-4 text-secondary hover:bg-secondary-50 py-2 rounded-lg transition-colors" onclick="window.location.href='category_task_detail.html?category=dhikr'">
+                    عرض التفاصيل
+                </button>
+            </div>
+
+            <!-- Quran Card -->
+            <div class="card p-6 hover:shadow-custom-lg transition-all duration-300">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 bg-accent-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-accent" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold arabic-font">القرآن</h3>
+                        <p class="text-sm text-text-secondary">مكتمل 0/3</p>
+                    </div>
+                </div>
+                
+                <div class="space-y-3">
+                    <div class="task-item flex items-center gap-3 p-2 rounded-lg hover:bg-accent-50">
+                        <input type="checkbox" id="quran-reading" class="w-5 h-5 text-accent rounded focus:ring-accent" data-points="20" />
+                        <label for="quran-reading" class="flex-1 arabic-font cursor-pointer">قراءة صفحة من القرآن</label>
+                        <span class="text-sm text-accent font-semibold">+20</span>
+                    </div>
+                    <div class="task-item flex items-center gap-3 p-2 rounded-lg hover:bg-accent-50">
+                        <input type="checkbox" id="quran-memorization" class="w-5 h-5 text-accent rounded focus:ring-accent" data-points="25" />
+                        <label for="quran-memorization" class="flex-1 arabic-font cursor-pointer">حفظ آيات جديدة</label>
+                        <span class="text-sm text-accent font-semibold">+25</span>
+                    </div>
+                    <div class="task-item flex items-center gap-3 p-2 rounded-lg hover:bg-accent-50">
+                        <input type="checkbox" id="quran-reflection" class="w-5 h-5 text-accent rounded focus:ring-accent" data-points="15" />
+                        <label for="quran-reflection" class="flex-1 arabic-font cursor-pointer">تدبر وتأمل</label>
+                        <span class="text-sm text-accent font-semibold">+15</span>
+                    </div>
+                </div>
+                
+                <button class="w-full mt-4 text-accent hover:bg-accent-50 py-2 rounded-lg transition-colors" onclick="window.location.href='category_task_detail.html?category=quran'">
+                    عرض التفاصيل
+                </button>
+            </div>
+
+            <!-- Charity Card -->
+            <div class="card p-6 hover:shadow-custom-lg transition-all duration-300">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 bg-success/10 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-success" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold arabic-font">الصدقة</h3>
+                        <p class="text-sm text-text-secondary">مكتمل 1/1</p>
+                    </div>
+                </div>
+                
+                <div class="space-y-3">
+                    <div class="task-item flex items-center gap-3 p-2 rounded-lg hover:bg-success/5">
+                        <input type="checkbox" id="daily-charity" class="w-5 h-5 text-success rounded focus:ring-success" data-points="30" checked />
+                        <label for="daily-charity" class="flex-1 arabic-font cursor-pointer">صدقة يومية</label>
+                        <span class="text-sm text-accent font-semibold">+30</span>
+                    </div>
+                </div>
+                
+                <button class="w-full mt-4 text-success hover:bg-success/5 py-2 rounded-lg transition-colors" onclick="window.location.href='category_task_detail.html?category=charity'">
+                    عرض التفاصيل
+                </button>
+            </div>
+        </section>
+
+        <!-- Daily Review Button -->
+        <section class="text-center mt-8">
+            <button class="btn btn-accent px-8 py-4 text-lg arabic-font shadow-custom-lg hover:shadow-custom-md transform hover:scale-105 transition-all duration-300" onclick="window.location.href='daily_review_summary.html'">
+                مراجعة يومية
+            </button>
+        </section>
+    </main>
+
+    <!-- Navigation Menu (Hidden by default) -->
+    <nav id="navigationMenu" class="fixed inset-0 bg-black/50 z-50 hidden">
+        <div class="bg-white w-80 h-full shadow-custom-lg transform -translate-x-full transition-transform duration-300" id="menuPanel">
+            <div class="p-6 border-b border-border">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-bold arabic-font">القائمة</h2>
+                    <button id="closeMenuBtn" class="p-2 hover:bg-gray-100 rounded-lg">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6 space-y-4">
+                <a href="daily_habits_dashboard.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-primary-50 transition-colors">
+                    <svg class="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
+                    </svg>
+                    <span class="arabic-font">لوحة التحكم</span>
+                </a>
+                <a href="progress_history_analytics.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-secondary-50 transition-colors">
+                    <svg class="w-5 h-5 text-secondary" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"/>
+                        <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"/>
+                    </svg>
+                    <span class="arabic-font">تحليل التقدم</span>
+                </a>
+                <a href="daily_review_summary.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-accent-50 transition-colors">
+                    <svg class="w-5 h-5 text-accent" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                    </svg>
+                    <span class="arabic-font">المراجعة اليومية</span>
+                </a>
+                <a href="settings_preferences.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                    <svg class="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/>
+                    </svg>
+                    <span class="arabic-font">الإعدادات</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <script>
+        // Initialize app data
+        let habitsData = {
+            points: 38,
+            totalPoints: 192,
+            completedTasks: 3,
+            totalTasks: 18,
+            tasks: {
+                fajr: true,
+                dhuhr: false,
+                asr: false,
+                maghrib: false,
+                isha: false,
+                'morning-adhkar': false,
+                'evening-adhkar': false,
+                'istighfar': false,
+                'quran-reading': false,
+                'quran-memorization': false,
+                'quran-reflection': false,
+                'daily-charity': true
+            }
+        };
+
+        // Load data from localStorage
+        function loadData() {
+            const saved = localStorage.getItem('islamicHabitsData');
+            if (saved) {
+                habitsData = { ...habitsData, ...JSON.parse(saved) };
+            }
+            updateUI();
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('islamicHabitsData', JSON.stringify(habitsData));
+        }
+
+        // Update UI elements
+        function updateUI() {
+            document.getElementById('pointsCounter').textContent = habitsData.points;
+            document.getElementById('tasksCounter').textContent = habitsData.completedTasks;
+            
+            const percentage = ((habitsData.completedTasks / habitsData.totalTasks) * 100).toFixed(1);
+            document.getElementById('progressPercentage').textContent = percentage + '%';
+            
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.setProperty('--progress-width', percentage + '%');
+            progressBar.style.width = percentage + '%';
+
+            // Update checkboxes
+            Object.keys(habitsData.tasks).forEach(taskId => {
+                const checkbox = document.getElementById(taskId);
+                if (checkbox) {
+                    checkbox.checked = habitsData.tasks[taskId];
+                }
+            });
+
+            // Update category completion counts
+            updateCategoryCompletions();
+        }
+
+        // Update category completion counts
+        function updateCategoryCompletions() {
+            const categories = {
+                prayer: ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'],
+                dhikr: ['morning-adhkar', 'evening-adhkar', 'istighfar'],
+                quran: ['quran-reading', 'quran-memorization', 'quran-reflection'],
+                charity: ['daily-charity']
+            };
+
+            // Update completion text for each category
+            Object.keys(categories).forEach(category => {
+                const tasks = categories[category];
+                const completed = tasks.filter(task => habitsData.tasks[task]).length;
+                const total = tasks.length;
+                
+                // Find and update the completion text
+                const categoryCards = document.querySelectorAll('.card');
+                categoryCards.forEach(card => {
+                    const completionText = card.querySelector('p.text-text-secondary');
+                    if (completionText && completionText.textContent.includes('مكتمل')) {
+                        if ((category === 'prayer' && card.querySelector('label[for="fajr"]')) ||
+                            (category === 'dhikr' && card.querySelector('label[for="morning-adhkar"]')) ||
+                            (category === 'quran' && card.querySelector('label[for="quran-reading"]')) ||
+                            (category === 'charity' && card.querySelector('label[for="daily-charity"]'))) {
+                            completionText.textContent = `مكتمل ${completed}/${total}`;
+                        }
+                    }
+                });
+            });
+        }
+
+        // Handle task completion
+        function handleTaskChange(event) {
+            const taskId = event.target.id;
+            const isChecked = event.target.checked;
+            const points = parseInt(event.target.dataset.points);
+
+            // Update task status
+            habitsData.tasks[taskId] = isChecked;
+
+            // Update points and task count
+            if (isChecked) {
+                habitsData.points += points;
+                habitsData.completedTasks++;
+                // Add bounce animation to the task
+                event.target.parentElement.classList.add('bounce-in');
+                setTimeout(() => {
+                    event.target.parentElement.classList.remove('bounce-in');
+                }, 500);
+            } else {
+                habitsData.points -= points;
+                habitsData.completedTasks--;
+            }
+
+            // Update UI and save data
+            updateUI();
+            saveData();
+        }
+
+        // Menu functionality
+        function setupMenu() {
+            const menuBtn = document.getElementById('menuBtn');
+            const closeMenuBtn = document.getElementById('closeMenuBtn');
+            const navigationMenu = document.getElementById('navigationMenu');
+            const menuPanel = document.getElementById('menuPanel');
+
+            menuBtn.addEventListener('click', () => {
+                navigationMenu.classList.remove('hidden');
+                setTimeout(() => {
+                    menuPanel.classList.remove('-translate-x-full');
+                }, 10);
+            });
+
+            closeMenuBtn.addEventListener('click', closeMenu);
+            navigationMenu.addEventListener('click', (e) => {
+                if (e.target === navigationMenu) {
+                    closeMenu();
+                }
+            });
+
+            function closeMenu() {
+                menuPanel.classList.add('-translate-x-full');
+                setTimeout(() => {
+                    navigationMenu.classList.add('hidden');
+                }, 300);
+            }
+        }
+
+        // Update Arabic date
+        function updateArabicDate() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                calendar: 'islamic'
+            };
+            
+            // For demo purposes, keeping the static Arabic date
+            // In a real app, you would use proper Hijri date conversion
+            document.getElementById('arabicDate').textContent = 'الأحد ٢٥ جمادى الآخرة ١٤٤٦';
+        }
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            setupMenu();
+            updateArabicDate();
+
+            // Add event listeners to all checkboxes
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', handleTaskChange);
+            });
+        });
+    </script>
+<script id="dhws-dataInjector" src="../public/dhws-data-injector.js"></script>
+</body>
+</html>
